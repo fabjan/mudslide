@@ -80,6 +80,7 @@ the newline character that immediately precedes the "Z".
 ## Pretend Backlog
 
 - simple gossip protocol to let different servers cooperate storing and serving data
+- more implementations: Go, Rust, C, Pony, Kotlin, Rebol ... the sky is the limit
 - "manyfests", describing a set of manifests together
   - has `M checksum logical-name` cards and a `Z checksum` card only
   - not recursive, just one level of wrapping
