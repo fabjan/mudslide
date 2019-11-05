@@ -28,7 +28,7 @@
 
 (def command-options
   [["-d" "--prefix DIR" "Where to put the file store root directory"
-    :default "/tmp"
+    :default "/tmp/mudslide"
     :validate [#(not (str/includes? % "..")) "Must be an absolute path"]]
    ["-h" "--help"]])
 

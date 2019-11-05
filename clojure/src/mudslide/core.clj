@@ -4,12 +4,12 @@
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]))
 
-(def ^:dynamic *store-prefix* "/tmp") ; dynamic to let the server decide
+(def ^:dynamic *store-prefix* "/tmp/mudslide") ; dynamic to let the server decide
 
 (defn- files-root []
-  (io/file *store-prefix* "mudslide.store" "files"))
+  (io/file *store-prefix* "mudslide.clojure.store" "files"))
 (defn- manifests-root []
-  (io/file *store-prefix* "mudslide.store" "manifests"))
+  (io/file *store-prefix* "mudslide.clojure.store" "manifests"))
 (defn- get-store-file [name]
   (io/file (files-root) name))
 (defn- get-store-manifest [name]

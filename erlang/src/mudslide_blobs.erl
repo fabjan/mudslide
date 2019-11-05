@@ -69,7 +69,7 @@ start_link(Prefix) ->
     gen_server:start_link({local, ?SERVER_NAME}, ?MODULE, [Prefix], []).
 
 init([Prefix]) ->
-    StorePrefix = Prefix ++ "/mudslide_blobs.store",
+    StorePrefix = Prefix ++ "/mudslide.erlang.store",
     ok = filelib:ensure_dir(files_root(StorePrefix) ++ "/."),
     ok = filelib:ensure_dir(manifests_root(StorePrefix) ++ "/."),
     {ok, StorePrefix}.
