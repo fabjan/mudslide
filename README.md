@@ -1,6 +1,6 @@
 # Mudslide
 
-A slow moving mass of data.
+A slow moving monotonically increasing mass of data.
 
 _Mudslide_ is like a directory tree with pocket dimensions.
 You store sets of files in it, and retrieve sets of files from it.
@@ -20,7 +20,7 @@ build magic here.
 ## Usage
 
 When running, all implementations serve this HTTP API for storing and
-retrieving files and file sets (described by "manifests").
+retrieving files and file sets (described by "manifests"):
 
     PUT /api/files/:checksum
     GET /api/files/:checksum
@@ -30,7 +30,7 @@ retrieving files and file sets (described by "manifests").
     GET /api/manifests/
 
 A file is any sequence of bytes. A manifest is a text file describing a
-set of stored iles. See [#Protocol].
+set of stored files. See [#Protocol].
 
 ## Protocol
 
