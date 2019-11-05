@@ -12,8 +12,10 @@ DEP_PLUGINS = elvis_mk
 
 ifdef PROD
 SFX=1
+RELX_CONFIG = $(CURDIR)/relx.prod.config
 else
 RELX_OPTS = -d true
+RELX_CONFIG = $(CURDIR)/relx.dev.config
 DEPS += sync
 endif
 

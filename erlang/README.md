@@ -1,6 +1,7 @@
 ## Installation
 
 You obviously need [Erlang] here (OTP 20 tested), and [Erlang.mk] for building.
+Erlang.mk require GNU Make 4 or later.
 
 Run `make rel SFX=1` to create a self-extracting release that you can just run.
 
