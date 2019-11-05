@@ -16,6 +16,9 @@ init(Req, State) ->
     Rep = handle(State, Method, Checksum, HasBody, Req),
     {ok, Rep, State}.
 
+handle(homepage_request, <<"GET">>, _, _, Req) ->
+    cowboy_req:reply(200, #{}, "<h1>Hemsida</h1>\n", Req);
+
 handle(_, <<"PUT">>, _, false, Req) ->
     cowboy_req:reply(400, #{}, "missing body\n", Req);
 
