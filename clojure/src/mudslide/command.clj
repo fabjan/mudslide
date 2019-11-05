@@ -78,8 +78,8 @@
       (= ["start"] arguments)
       (start-web-api (:prefix options) (:port options))
       
-      (and (= "store" (first arguments)) (= 2 (count arguments)))
-      (store-string (:prefix options) (second arguments))
+      (and (= "store" (first arguments)) (= 3 (count arguments)))
+      (store-string (:prefix options) (nth arguments 1) (nth arguments 2))
 
       (and (= "dump" (first arguments)) (= 2 (count arguments)))
       (dump-text-file (:prefix options) (second arguments))
