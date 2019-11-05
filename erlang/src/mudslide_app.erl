@@ -7,8 +7,8 @@
 start(_Type, _Args) ->
     {ok, BlobStorePrefix} = application:get_env(mudslide, blob_store_prefix),
     {ok, HttpPort} = application:get_env(mudslide, http_port),
-    application:ensure_all_started(cowboy),
-    ApiRoutes = mudslide_http:routes("/api"),
+    application:ensure_all_started(cowboy), % :shruggie:
+    ApiRoutes = [{"/api" ++ P, H, S} || {P, H, S} <- mudslide_http:routes()],
     Dispatch = cowboy_router:compile([{'_', ApiRoutes}]),
     {ok, _} = cowboy:start_clear(mudslide_cowboy,
         [{port, HttpPort}],

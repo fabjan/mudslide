@@ -1,12 +1,12 @@
 -module(mudslide_http).
 
--export([routes/1]).
+-export([routes/0]).
 -export([init/2]).
 
-routes(Prefix) ->
+routes() ->
     [
-        {Prefix ++ "/files/:checksum", ?MODULE, file_request},
-        {Prefix ++ "/manifests/[:checksum]", ?MODULE, manifest_request}
+        {"/files/:checksum", ?MODULE, file_request},
+        {"/manifests/[:checksum]", ?MODULE, manifest_request}
     ].
 
 init(Req, State) ->
