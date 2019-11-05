@@ -27,14 +27,12 @@
 
   (PUT "/api/files/:checksum" [checksum :as req] (core/save-file checksum (:body req)))
   (GET "/api/files/:checksum" [checksum] (core/get-file-stream checksum))
-  (GET "/api/files" [] (core/list-files))
 
   (PUT "/api/manifests/:checksum" [checksum :as req] (core/save-manifest checksum (:body req)))
   (GET "/api/manifests/:checksum" [checksum] (core/get-manifest checksum))
-  (GET "/api/manifests" [] (core/list-manifests))
+  (GET "/api/manifests" [] (concat (interpose "\n" (core/list-manifests)) ["\n"]))
 
-  ;(not-found "404 Not found")
-  )
+  (not-found "404 Not found"))
 
 (defn start [port-number]
   (jetty/run-jetty (-> routes wrap-exceptions)
