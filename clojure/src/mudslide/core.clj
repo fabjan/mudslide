@@ -2,7 +2,8 @@
   (:require [mudslide.util :as util]
             [mudslide.manifest :as manifest]
             [clojure.java.io :as io]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log])
+  (:import java.io.InputStream))
 
 (def ^:dynamic *store-prefix* "/tmp/mudslide") ; dynamic to let the server decide
 
@@ -20,38 +21,54 @@
 (defn name-manifest [manifest]
   (::manifest/checksum manifest))
 
-(defn- write-file-if-not-exists
+(defn- write-blob-if-not-exists
   "write data to file, iff file does not already exist"
   [file data]
   (let [name (.getAbsolutePath file)]
     (if (.exists file)
-      (log/debug "ignore duplicate file write" name)
+      (log/debug "ignore duplicate blob write" name)
       (do
-        (log/info "storing new file" name)
+        (log/info "storing new blob" name)
         (io/make-parents file)
         (with-open [o (io/output-stream file)]
           (.write o data))))))
 
+(defn to-bytes [data]
+  (cond
+    (bytes? data) data
+    (instance? InputStream data) (let [os (java.io.ByteArrayOutputStream.)]
+                                   (io/copy data os)
+                                   (.toByteArray os))))
+
 (defn save-file
   "store the given byte array in a file named by its hash"
-  [data]
-  (assert (bytes? data) "I can only store byte arrays")
-  (let [name (name-file data)
-        file (get-store-file name)]
-    (write-file-if-not-exists file data)))
+  [checksum data]
+  (let [bytes (to-bytes data)
+        name (name-file bytes)
+        real-file (get-store-file name)]
+    (assert (= name checksum) "incorrect file checksum")
+    (write-blob-if-not-exists real-file bytes)
+    checksum))
 
 (defn save-text-file
   "convenience wrapper for testing, see save-file"
-  [s]
-  (save-file (.getBytes s)))
+  [checksum s]
+  (save-file checksum (.getBytes s)))
+
+(defn to-string [data]
+  (cond
+    (string? data) data
+    (instance? InputStream data) (slurp data)))
 
 (defn save-manifest
   "check that all files in the manifest exist, and store the manifest"
-  [manifest-content]
-  (let [manifest (manifest/parse manifest-content)
+  [checksum manifest-content]
+  (let [manifest-text (to-string manifest-content)
+        manifest (manifest/parse manifest-text)
         manifest-name (name-manifest manifest)
         files (::manifest/files manifest)]
     (assert manifest-name "manifest has no checksum")
+    (assert (= manifest-name checksum) "incorrect manifest checksum")
     (assert files "manifest has no files")
     (doseq [manifest-file files]
       (let [stored-filename (::manifest/filehash manifest-file)]
@@ -59,8 +76,9 @@
                 (str "manifest file missing: " (::manifest/filename manifest-file)))))
     (log/info "saving manifest" manifest-name
               "with files" (map :mudslide.manifest/filename files))
-    (write-file-if-not-exists (get-store-manifest manifest-name)
-                              (.getBytes manifest-content))))
+    (write-blob-if-not-exists (get-store-manifest manifest-name)
+                              (.getBytes manifest-text))
+    checksum))
 
 (defn list-manifests
   "list all stored manifests"
